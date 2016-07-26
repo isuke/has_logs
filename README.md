@@ -1,5 +1,7 @@
 # HasLogs
 
+[![Build Status](https://travis-ci.org/isuke/has_logs.svg?branch=master)](https://travis-ci.org/isuke/has_logs)
+
 Logging your ActiveRecord model, and supply useful methods.
 
 TODO: Delete this and the text above, and describe your gem
@@ -48,7 +50,7 @@ class CreateAllTables < ActiveRecord::Migration
 end
 ```
 
-## Model Class
+### Model Class
 
 ```ruby
 class Article < ActiveRecord::Base
@@ -60,7 +62,7 @@ class ArticleLog < ActiveRecord::Base
 end
 ```
 
-## Usage Examples
+### Usage Examples
 
 ```ruby
 article = Article.create(title: 'test1', content: 'demo1', public: false)

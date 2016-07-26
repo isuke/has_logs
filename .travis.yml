@@ -1,5 +1,19 @@
 sudo: false
 language: ruby
 rvm:
+  - 2.1.9
+  - 2.2.5
   - 2.3.1
+gemfile:
+  - gemfiles/activerecord_4.2.5.gemfile
+  - gemfiles/activerecord_5.0.0.gemfile
+matrix:
+  exclude:
+  - rvm: 2.1.9
+    gemfile: gemfiles/activerecord_5.0.0.gemfile
+  - rvm: 2.2.5
+    gemfile: gemfiles/activerecord_5.0.0.gemfile
+  - rvm: 2.3.1
+    gemfile: gemfiles/activerecord_4.2.5.gemfile
 before_install: gem install bundler -v 1.12.5
+script: "bundle exec rspec"
