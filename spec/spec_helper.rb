@@ -6,6 +6,8 @@ require 'has_logs'
 require 'rspec/its'
 require 'shoulda'
 
+require 'create_all_tables'
+
 Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |f| require f }
 
 RSpec.configure do

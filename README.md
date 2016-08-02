@@ -4,8 +4,6 @@
 
 Logging your ActiveRecord model, and supply useful methods.
 
-TODO: Delete this and the text above, and describe your gem
-
 ## Installation
 
 Add this line to your application's Gemfile:
@@ -88,6 +86,58 @@ article.oldest_log.next
 
 article.latest_log.prev
 => #<ArticleLog id: 2, article_id: 1, title: "test2", content: "demo2", created_at: "2015-01-04 03:36:51">
+```
+
+#### Originator Methods
+
+| Methods       | Describe            |
+| ------------- | ------------------- |
+| logs          | get the log list    |
+| latest_log    | get the latest log  |
+| oldest_log    | get the oldest log  |
+
+#### Log Methods
+
+| Methods       | Describe                 |
+| ------------- | ------------------------ |
+| originator    | get the originator model |
+| next          | get a next log           |
+| prev          | get a prev log           |
+
+## Other Naming Example
+
+### Migration
+
+```ruby
+class CreateAllTables < ActiveRecord::Migration
+  def self.up
+    create_table(:users) do |t|
+      t.timestamps
+    end
+
+    create_table(:user_histories) do |t|
+      t.integer :user_id, null: false
+      t.string :title, null: false
+      t.text :content
+      t.boolean :public, null: false, default: true
+      t.datetime :created_at
+    end
+    add_index :user_logs,  :user_id
+    add_index :user_logs, [:user_id, :created_at], unique: true
+  end
+end
+```
+
+### Model Class
+
+```ruby
+class User < ActiveRecord::Base
+  has_logs_as 'UserHistory'
+end
+
+class UserHistory < ActiveRecord::Base
+  act_as_log_of 'User'
+end
 ```
 
 ## Development
