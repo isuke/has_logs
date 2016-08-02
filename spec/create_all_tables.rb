@@ -32,6 +32,36 @@ class CreateAllTables < ActiveRecord::Migration
     end
     add_index :user_histories,  :user_id
     add_index :user_histories, [:user_id, :created_at], unique: true
+
+    ############################################################################
+    # Duplicate                                                                #
+    ############################################################################
+    create_table(:tasks) do |t|
+      t.string :name, null: false
+      t.timestamps
+    end
+    create_table(:task_logs) do |t|
+      t.integer :task_id, null: false
+      t.string :name, null: false
+      t.datetime :created_at
+    end
+    add_index :task_logs,  :task_id
+    add_index :task_logs, [:task_id, :created_at], unique: true
+
+    ############################################################################
+    # Mutual                                                                   #
+    ############################################################################
+    create_table(:posts) do |t|
+      t.string :name, null: false
+      t.timestamps
+    end
+    create_table(:post_logs) do |t|
+      t.integer :post_id, null: false
+      t.string :name, null: false
+      t.datetime :created_at
+    end
+    add_index :post_logs,  :post_id
+    add_index :post_logs, [:post_id, :created_at], unique: true
   end
 end
 
