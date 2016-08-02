@@ -21,7 +21,7 @@ describe 'Other Naming Model' do
     user.attributes = { name: 'name3' } ; user.save!
     user
   end
-  let!(:user_history) { user.logs.where(name: 'name1').first }
+  let!(:user_history) { user.logs.find_by(name: 'name2') }
 
   describe User do
     subject { user }

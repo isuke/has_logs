@@ -21,7 +21,7 @@ describe 'Basic Model' do
     article.attributes =   { title: 'test3', content: 'demo3', public: true  } ; article.save!
     article
   end
-  let!(:article_log) { article.logs.where(title: 'test2').first }
+  let!(:article_log) { article.logs.find_by(title: 'test2') }
 
   describe Article do
     subject { article }
@@ -55,6 +55,9 @@ describe 'Basic Model' do
 
     it { is_expected.to belong_to(:originator).class_name('Article') }
 
+    its(:title)   { is_expected.to eq 'test2' }
+    its(:content) { is_expected.to eq 'demo2' }
+    its(:public)  { is_expected.to eq false }
     its(:originator) { is_expected.to eq article }
     its(:next) { is_expected.to eq ArticleLog.find_by(title: 'test3') }
     its(:prev) { is_expected.to eq ArticleLog.find_by(title: 'test1') }

@@ -117,9 +117,7 @@ class CreateAllTables < ActiveRecord::Migration
 
     create_table(:user_histories) do |t|
       t.integer :user_id, null: false
-      t.string :title, null: false
-      t.text :content
-      t.boolean :public, null: false, default: true
+      t.string :name, null: false
       t.datetime :created_at
     end
     add_index :user_logs,  :user_id
@@ -138,6 +136,123 @@ end
 class UserHistory < ActiveRecord::Base
   act_as_log_of 'User'
 end
+```
+
+## Duplicate Type Example
+
+### Migration
+
+```ruby
+class CreateAllTables < ActiveRecord::Migration
+  def self.up
+    create_table(:tasks) do |t|
+      t.string :name, null: false
+      t.timestamps
+    end
+    create_table(:task_logs) do |t|
+      t.integer :task_id, null: false
+      t.string :name, null: false
+      t.datetime :created_at
+    end
+    add_index :task_logs,  :task_id
+    add_index :task_logs, [:task_id, :created_at], unique: true
+  end
+end
+```
+
+### Model Class
+
+```ruby
+class Task < ActiveRecord::Base
+  has_logs have_type: :duplicate
+end
+class TaskLog < ActiveRecord::Base
+  act_as_log
+end
+```
+
+### Usage Examples
+
+```
+task  = Task.create(name: 'name1')
+task.attributes = { name: 'name2' } ; task.save!
+task.attributes = { name: 'name3' } ; task.save!
+
+Task.all
+=>
++----+-------+
+| id | name  |
++----+-------+
+|  1 | name3 |
++----+-------+
+
+TaskLog.all
+=>
++----+---------+-------+
+| id | task_id | name  |
++----+---------+-------+
+|  1 |       1 | name1 |
+|  2 |       1 | name2 |
+|  3 |       1 | name3 |
++----+---------+-------+
+```
+
+## Mutual Type Example
+
+### Migration
+
+```ruby
+class CreateAllTables < ActiveRecord::Migration
+  def self.up
+    create_table(:posts) do |t|
+      t.string :name, null: false
+      t.timestamps
+    end
+    create_table(:post_logs) do |t|
+      t.integer :post_id, null: false
+      t.string :name, null: false
+      t.datetime :created_at
+    end
+    add_index :post_logs,  :post_id
+    add_index :post_logs, [:post_id, :created_at], unique: true
+  end
+end
+```
+
+### Model Class
+
+```ruby
+class Post < ActiveRecord::Base
+  has_logs have_type: :mutual
+end
+class PostLog < ActiveRecord::Base
+  act_as_log
+end
+```
+
+### Usage Examples
+
+```
+post  = Post.create(name: 'name1')
+post.attributes = { name: 'name2' } ; post.save!
+post.attributes = { name: 'name3' } ; post.save!
+
+Post.all
+=>
++----+-------+
+| id | name  |
++----+-------+
+|  1 | name3 |
++----+-------+
+
+PostLog.all
+=>
++----+---------+-------+
+| id | post_id | name  |
++----+---------+-------+
+|  1 |       1 | name1 |
+|  2 |       1 | name2 |
++----+---------+-------+
 ```
 
 ## Development
